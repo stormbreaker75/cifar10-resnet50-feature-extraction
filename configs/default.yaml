@@ -1,0 +1,47 @@
+# CIFAR10 ResNet50 Feature Extraction Config
+# Traditional data augmentation transforms
+
+# Random seed (for reproducibility)
+seed: 42
+
+# Dataset config
+dataset:
+  name: CIFAR10
+  data_root: "./data"          # Path to download/store the CIFAR10 raw data
+  num_classes: 10
+
+# Model config
+model:
+  name: resnet50
+  pretrained: "DEFAULT"           # DEFAULT: load official ImageNet1K 1000-class weights; null: random initialization
+  feature_dim: 2048             # Feature dim after ResNet50 global average pooling
+
+# Data transforms (traditional transform pipeline)
+transform:
+  # Training transforms
+  train:
+    resize: 256
+    crop_size: 224
+    random_horizontal_flip: true
+    mean: [0.485, 0.456, 0.406]  # ImageNet mean
+    std: [0.229, 0.224, 0.225]   # ImageNet std
+
+  # Test transforms (no data augmentation)
+  test:
+    resize: 256
+    crop_size: 224
+    mean: [0.485, 0.456, 0.406]
+    std: [0.229, 0.224, 0.225]
+
+# Extraction config
+extraction:
+  batch_size: 128
+  num_workers: 4
+  device: "cuda"               # cuda / cpu
+
+# Output config
+output:
+  mat_path: "./data/cifar10_resnet50_features.mat"
+  save_train_features: true
+  save_test_features: true
+  save_double: false           # false: single(float32) feature; true: double(float64), label always int32
